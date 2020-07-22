@@ -13,7 +13,7 @@ import numpy as np
 import itertools
 from skmisc.loess import loess
 
-from XDOC.bootstrap_mp import get_boot
+# from XDOC.bootstrap_mp import get_boot
 import altair as alt
 
 
@@ -71,14 +71,6 @@ def DOC_ci(lowp: pd.DataFrame, p_ci: tuple):
     return LCI
 
 
-def chunks(lst, n):
-    """Yield successive n-sized chunks from lst.
-    https://stackoverflow.com/questions/312443/
-    how-do-you-split-a-list-into-evenly-sized-chunks?page=1&tab=votes#tab-top"""
-    for i in range(0, len(lst), n):
-        yield lst[i:i + n]
-
-
 def DOC_boot(
         do: list,
         p_r: int,
@@ -114,15 +106,10 @@ def DOC_boot(
 
     print("Running bootstraps")
     
-    # Progress bar
-#    pb = txtProgressBar(max = R, style = 3)
-#    progress = function(n) setTxtProgressBar(pb, n)
-#    opts = list(progress = progress)
     llboot = get_boot(OL, DIS, xs, p_r, p_pair, p_mov_avg, p_subr, p_cores,
                       p_span, p_degree, p_family, p_iterations, p_surface)
-    # llboot.append([LOW_P, Est, neg_slope, Fns])
 
-    # Extract and bind lowess, lme, negative slope and Fns seperately
+    # Extract and bind lowess, lme, negative slope and Fns separately
     LOWES = pd.concat([x[0] for x in llboot], axis=1, sort=False)
     LOWES = pd.concat([pd.DataFrame({'Overlap': [round(float(x), 4) for x in xs]}), LOWES], axis=1, sort=False)
     LME = pd.DataFrame({'Slope': [x[1] for x in llboot]})
@@ -417,10 +404,10 @@ def xdoc(
         p_nulls: int = 1,
         non_zero: bool = True,
         null: bool = False,
-        verbose: bool = True
-):
+        verbose: bool = True):
     """
-    A python wrapper of the R wrapper from https://github.com/Russel88/DOC
+    A python wrapper of the R wrapper
+    from https://github.com/Russel88/DOC
     to run the whole DOC analysis
     """
     Final = DOC(
@@ -482,4 +469,3 @@ def xdoc(
                 table_pd.to_csv(path, index=True, sep='\t')
             else:
                 table_pd.to_csv(path, index=False, sep='\t')
-
