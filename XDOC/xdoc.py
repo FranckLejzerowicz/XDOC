@@ -230,8 +230,7 @@ def DOC_do(otu: pd.DataFrame, pair: str):
 # def do_filter(otu: pd.DataFrame, p_filter: str):
 
 
-
-def xdoc(
+def DOC(
         i_otu: str,
         o_outdir: str,
         m_metadata: str = None,
@@ -265,10 +264,12 @@ def xdoc(
     if verbose:
         print('read')
     otu = pd.read_csv(i_otu, header=0, index_col=0, sep='\t')
+    if not isdir(o_outdir):
+        os.makedirs(o_outdir)
 
-    if p_filter:
-        # Filter / Transform OTU-table
-        otu = do_filter(otu, p_filter)
+    # if p_filter:
+    #     # Filter / Transform OTU-table
+    #     otu = do_filter(otu, p_filter)
 
     # Normalize OTU-table
     otun = otu / otu.sum()
@@ -317,15 +318,168 @@ def xdoc(
         'BOOT': LOWES,
         'CI': LCIS
     }
+    return Final
+
+
+def DOC_otunull(otu, non_zero=True):
+    if non_zero:
+        # Shuffle all non-zero values
+        otu_null = []
+        for row in otu.values:
+            if sum(row == 0):
+                idx = np.nonzero(row)
+                row[idx] = np.random.permutation(row[idx])
+            otu_null.append(row)
+        otu_null = pd.DataFrame(otu_null)
+    else:
+        # Shuffle all values
+        otu_null = otu.sample(frac=1, axis=1).sample(frac=1)
+
+    otu_null.columns = otu.columns
+    otu_null.index = otu.index
+    return otu_null
+
+
+def xdoc_null(
+        i_otu: str,
+        o_outdir: str,
+        m_metadata: str = None,
+        p_filter: str = None,
+        p_r: int = 100,
+        p_subr: int = 0,
+        p_pair: str = None,
+        p_mov_avg: int = 5,
+        p_ci: tuple = (0.025, 0.5, 0.975,),
+        p_span: float = .2,
+        p_degree: float = 1.,
+        p_family: str = 'symmetric',
+        p_iterations: int = 4,
+        p_surface: str = 'direct',
+        p_cores: int = 1,
+        p_nulls: int = 1,
+        non_zero: bool = True,
+        verbose: bool = True):
+    nulls = {}
+    otu = pd.read_csv(i_otu, header=0, index_col=0, sep='\t')
+    for i in range(p_nulls):
+        # Make NULL
+        otu_null = DOC_otunull(otu, non_zero)
+        i_otu = '%s/random.tmp' % o_outdir
+        otu_null.to_csv(i_otu, index=True, sep='\t')
+
+        # Run DOC
+        doc_null = DOC(
+            i_otu,
+            o_outdir,
+            m_metadata,
+            p_filter,
+            p_r,
+            p_subr,
+            p_pair,
+            p_mov_avg,
+            p_ci,
+            p_span,
+            p_degree,
+            p_family,
+            p_iterations,
+            p_surface,
+            p_cores,
+            verbose
+        )
+        nulls['Null.%s' % i] = doc_null
+
+    final_nulls = {}
+    for null, finals in nulls.items():
+        for table, table_pd_ in finals.items():
+            table_pd = table_pd_.copy()
+            table_pd['Null_dataset'] = null
+            final_nulls.setdefault(table, []).append(table_pd)
+
+    return final_nulls
+
+
+def xdoc(
+        i_otu: str,
+        o_outdir: str,
+        m_metadata: str = None,
+        p_filter: str = None,
+        p_r: int = 100,
+        p_subr: int = 0,
+        p_pair: str = None,
+        p_mov_avg: int = 5,
+        p_ci: tuple = (0.025, 0.5, 0.975,),
+        p_span: float = .2,
+        p_degree: float = 1.,
+        p_family: str = 'symmetric',
+        p_iterations: int = 4,
+        p_surface: str = 'direct',
+        p_cores: int = 1,
+        p_nulls: int = 1,
+        non_zero: bool = True,
+        null: bool = False,
+        verbose: bool = True
+):
+    """
+    A python wrapper of the R wrapper from https://github.com/Russel88/DOC
+    to run the whole DOC analysis
+    """
+    Final = DOC(
+        i_otu,
+        o_outdir,
+        m_metadata,
+        p_filter,
+        p_r,
+        p_subr,
+        p_pair,
+        p_mov_avg,
+        p_ci,
+        p_span,
+        p_degree,
+        p_family,
+        p_iterations,
+        p_surface,
+        p_cores,
+        verbose
+    )
     if verbose:
         print('Writing:')
-    if not isdir(o_outdir):
-        os.makedirs(o_outdir)
     for table, table_pd in Final.items():
         path = '%s/%s.tsv' % (o_outdir, table)
         if verbose:
             print(' -', path)
-        if path == 'DO':
+        if table == 'DO':
             table_pd.to_csv(path, index=True, sep='\t')
         else:
             table_pd.to_csv(path, index=False, sep='\t')
+
+    if null:
+        final_nulls = xdoc_null(
+            i_otu,
+            o_outdir,
+            m_metadata,
+            p_filter,
+            p_r,
+            p_subr,
+            p_pair,
+            p_mov_avg,
+            p_ci,
+            p_span,
+            p_degree,
+            p_family,
+            p_iterations,
+            p_surface,
+            p_cores,
+            p_nulls,
+            non_zero,
+            verbose
+        )
+        for table, table_pds in final_nulls.items():
+            table_pd = pd.concat(table_pds)
+            path = '%s/null_%s.tsv' % (o_outdir, table)
+            if verbose:
+                print(' -', path)
+            if table == 'DO':
+                table_pd.to_csv(path, index=True, sep='\t')
+            else:
+                table_pd.to_csv(path, index=False, sep='\t')
+

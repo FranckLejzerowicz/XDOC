@@ -25,7 +25,6 @@ def ma(x, n):
 
 def init_worker(llb, ol, dis, x, p_p, p_s, m_a, p_sp, p_d, p_f, p_i, p_su):
     global llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degree, p_family, p_iterations, p_surface
-    print("process initializing", mp.current_process())
     llboot, OL, DIS, xs, p_pair, p_subr, p_span = llb, ol, dis, x, p_p, p_s, p_sp
     p_mov_avg, p_degree, p_family, p_iterations, p_surface = m_a, p_d, p_f, p_i, p_su
 
@@ -35,7 +34,6 @@ def work(item):
 
 
 def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degree, p_family, p_iterations, p_surface, item):
-    print("doing " + str(item))
     OL_rows, OL_cols = OL.shape
     if not p_pair:
         # Sample subjects

@@ -76,6 +76,18 @@ from XDOC import __version__
     show_default=True, help="Number of cores to use."
 )
 @click.option(
+    "-nulls", "--p-nulls", required=False, default=1, type=int,
+    show_default=True, help="Number of null models."
+)
+@click.option(
+    "--non-zero/--no-non-zero", default=True,
+    show_default=True, help="Only shuffle non zero values for null model."
+)
+@click.option(
+    "--null/--no-null", default=False,
+    show_default=True, help="Perform DOC on null models."
+)
+@click.option(
     "--verbose/--no-verbose", default=False
 )
 @click.version_option(__version__, prog_name="XDOC")
@@ -97,6 +109,9 @@ def standalone_xdoc(
         p_iterations,
         p_surface,
         p_cores,
+        p_nulls,
+        non_zero,
+        null,
         verbose
 ):
 
@@ -116,6 +131,9 @@ def standalone_xdoc(
         p_iterations,
         p_surface,
         p_cores,
+        p_nulls,
+        non_zero,
+        null,
         verbose
 )
 
