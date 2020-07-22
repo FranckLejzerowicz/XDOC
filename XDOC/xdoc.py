@@ -1,21 +1,19 @@
 # ----------------------------------------------------------------------------
 # Copyright (c) 2020, Franck Lejzerowicz.
 #
-# Distributed under the terms of the Modified BSD License.
+# Distributed under the terms of the MIT License.
 #
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import os
-from os.path import abspath, dirname, isfile, isdir, splitext
+import os, time
+from os.path import isfile, isdir
 import pandas as pd
 import numpy as np
-from scipy.signal import lfilter
 import itertools
-import random
 from skmisc.loess import loess
-import statsmodels.formula.api as smf
 
+from XDOC.bootstrap_mp import get_boot
 import altair as alt
 
 
@@ -52,7 +50,7 @@ def DOC_loess(
     LOW = loess(y=DF_l.y, x=DF_l.x, span=p_span, degree=p_degree,
                 family=p_family, iterations=p_iterations, surface=p_surface)
     LOW_pred = LOW.predict(newdata=xs)
-    LOW_P = pd.DataFrame({"Overlap": xs, "LOWESS": LOW_pred.values})
+    LOW_P = pd.DataFrame({"Overlap": [round(float(x), 4) for x in xs], "LOWESS": LOW_pred.values})
     LOW_P = LOW_P.loc[~LOW_P.isna().any(axis=1)]
     return LOW_P
 
@@ -73,98 +71,12 @@ def DOC_ci(lowp: pd.DataFrame, p_ci: tuple):
     return LCI
 
 
-def ma(x, n):
-    wins = np.repeat(1 / n, n)
-    smoothed_valid_x = np.convolve(wins, x, mode='valid')
-    smoothed_same_x = np.convolve(wins, x, mode='same')
-    smoothed_x = [x if x in smoothed_valid_x else np.nan for x in smoothed_same_x]
-    return smoothed_x
-
-
-def get_boot(
-        OL: pd.DataFrame,
-        DIS: pd.DataFrame,
-        xs: np.ndarray,
-        p_r: int,
-        p_pair: str,
-        p_mov_avg: int,
-        p_subr: int,
-        p_span: float,
-        p_degree: float,
-        p_family: str,
-        p_iterations: int,
-        p_surface: str):
-    llboot = []
-    OL_rows, OL_cols = OL.shape
-    for i in range(p_r):
-        if not p_pair:
-            # Sample subjects
-            if p_subr:
-                Samp = random.choices(OL.index, k=p_subr)
-            else:
-                Samp = random.choices(OL.index, k=OL_rows)
-            # Subset
-            OL_sub = OL.loc[Samp, Samp]
-            DIS_sub = DIS.loc[Samp, Samp]
-            # Vectorize
-            tril = np.tril_indices(len(Samp), k=-1)
-            OL_tri = OL_sub.values[tril]
-            DIS_tri = DIS_sub.values[tril]
-        else:
-            # Sample subjects
-            if p_subr:
-                Sampr = random.choices(OL.index, k=p_subr)
-                Sampc = random.choices(OL.columns, k=p_subr)
-            else:
-                Sampr = random.choices(OL.index, k=OL_rows)
-                Sampc = random.choices(OL.columns, k=OL_cols)
-            # Subset
-            OL_sub = OL.loc[Sampr, Sampc]
-            DIS_sub = DIS.loc[Sampr, Sampc]
-            # Vectorize
-            OL_tri = OL_sub.T.stack(dropna=False).values
-            DIS_tri = DIS_sub.T.stack(dropna=False).values
-
-        # To data frame
-        DF_l = pd.DataFrame({'y': DIS_tri, 'x': OL_tri})
-        DF_l = DF_l.loc[~DF_l.isna().any(axis=1)]
-        # Lowess
-        LOW = loess(y=DF_l.y, x=DF_l.x, span=p_span, degree=p_degree,
-            family=p_family, iterations=p_iterations, surface=p_surface)
-        LOW_pred = LOW.predict(newdata=xs)
-        LOW_P = pd.DataFrame({"rJSD Boot%s" % i: LOW_pred.values})
-        #
-        # # Data frame for lme (slope)
-        tril = np.tril_indices(OL_sub.shape[1], k=-1)
-        OL_vals = OL_sub.values[tril]
-        DIS_vals = DIS_sub.values[tril]
-        Tris = pd.DataFrame({
-            'Row': OL_sub.columns[tril[1]],
-            'Col': OL_sub.index[tril[0]],
-            'OL': OL_vals,
-            'DIS': DIS_vals
-        })
-        # Remove data with Overlap below median
-        Tris_sub = Tris.loc[Tris['OL'] >= np.nanmedian(OL_sub), :]
-
-        # LME
-        md = smf.mixedlm("DIS ~ OL", Tris_sub, groups=Tris_sub["Row"])
-        fit = md.fit()
-        Est = fit.params['OL']
-
-        ## Detect negative slope
-        # Smooth prediction
-        low_ma = ma(LOW_pred.values, p_mov_avg)
-        slope = pd.Series(low_ma).diff() / pd.Series(xs).diff()
-        point = slope[slope > 0].index[-1]
-        neg_slope = xs[point-1]
-
-        # Fns
-        Fns = sum([1 for x in OL_tri if x > neg_slope]) / len(OL_tri)
-
-        llboot.append([LOW_P, Est, neg_slope, Fns])
-
-    return llboot
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst.
+    https://stackoverflow.com/questions/312443/
+    how-do-you-split-a-list-into-evenly-sized-chunks?page=1&tab=votes#tab-top"""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
 
 
 def DOC_boot(
@@ -206,13 +118,13 @@ def DOC_boot(
 #    pb = txtProgressBar(max = R, style = 3)
 #    progress = function(n) setTxtProgressBar(pb, n)
 #    opts = list(progress = progress)
-    llboot = get_boot(OL, DIS, xs, p_r, p_pair, p_mov_avg, p_subr,
+    llboot = get_boot(OL, DIS, xs, p_r, p_pair, p_mov_avg, p_subr, p_cores,
                       p_span, p_degree, p_family, p_iterations, p_surface)
     # llboot.append([LOW_P, Est, neg_slope, Fns])
 
     # Extract and bind lowess, lme, negative slope and Fns seperately
     LOWES = pd.concat([x[0] for x in llboot], axis=1, sort=False)
-    LOWES = pd.concat([pd.DataFrame({'Overlap': xs}), LOWES], axis=1, sort=False)
+    LOWES = pd.concat([pd.DataFrame({'Overlap': [round(float(x), 4) for x in xs]}), LOWES], axis=1, sort=False)
     LME = pd.DataFrame({'Slope': [x[1] for x in llboot]})
     NEG = pd.DataFrame({'Neg_Slope': [x[2] for x in llboot]})
     FNS = pd.DataFrame({'Fns': [x[3] for x in llboot]})
@@ -315,9 +227,13 @@ def DOC_do(otu: pd.DataFrame, pair: str):
 
     return List
 
+# def do_filter(otu: pd.DataFrame, p_filter: str):
+
+
 
 def xdoc(
         i_otu: str,
+        p_filter: str,
         m_metadata: str,
         o_outdir: str,
         p_r: int,
@@ -338,6 +254,8 @@ def xdoc(
     to run the whole DOC analysis
     """
 
+    start = time.clock()
+
     if p_pair and len(p_pair) != 2:
         raise IOError("There should only be two names in pair")
 
@@ -347,6 +265,11 @@ def xdoc(
     if verbose:
         print('read')
     otu = pd.read_csv(i_otu, header=0, index_col=0, sep='\t')
+
+    if p_filter:
+        # Filter / Transform OTU-table
+        otu = do_filter(otu, p_filter)
+
     # Normalize OTU-table
     otun = otu / otu.sum()
 
@@ -381,6 +304,9 @@ def xdoc(
     if verbose:
         print('Lowess no bootsrap')
     LOWESS = DOC_loess(Dis_Over, p_pair, p_span, p_degree, p_family, p_iterations, p_surface)
+
+    end = time.clock()
+    print('time:', end - start)
 
     Final = {
         'DO': Dis_Over[2],

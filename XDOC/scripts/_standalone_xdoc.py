@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 # Copyright (c) 2020, Franck Lejzerowicz.
 #
-# Distributed under the terms of the Modified BSD License.
+# Distributed under the terms of the MIT License.
 #
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
@@ -18,11 +18,15 @@ from XDOC import __version__
     help="Input biom table."
 )
 @click.option(
+    "-f", "--p-filter", required=False, type=str,
+    help="Filtering config in yaml."
+)
+@click.option(
     "-m", "--m-metadata", required=False, type=str,
     default=None, help="Metadata table."
 )
 @click.option(
-    "-o", "--o-o_outdir", required=True, type=str,
+    "-o", "--o-outdir", required=True, type=str,
     help="Output directory path."
 )
 @click.option(
@@ -79,6 +83,7 @@ from XDOC import __version__
 
 def standalone_xdoc(
         i_otu,
+        p_filter,
         m_metadata,
         o_outdir,
         p_r,
@@ -97,6 +102,7 @@ def standalone_xdoc(
 
     xdoc(
         i_otu,
+        p_filter,
         m_metadata,
         o_outdir,
         p_r,
