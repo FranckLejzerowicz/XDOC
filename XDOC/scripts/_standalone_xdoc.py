@@ -18,16 +18,16 @@ from XDOC import __version__
     help="Input biom table."
 )
 @click.option(
-    "-f", "--p-filter", required=False, type=str,
-    help="Filtering config in yaml."
+    "-o", "--o-outdir", required=True, type=str,
+    help="Output directory path."
 )
 @click.option(
     "-m", "--m-metadata", required=False, type=str,
-    default=None, help="Metadata table."
+    default="", help="Metadata table."
 )
 @click.option(
-    "-o", "--o-outdir", required=True, type=str,
-    help="Output directory path."
+    "-f", "--p-filter", required=False, type=str,
+    default="", help="Filtering config in yaml."
 )
 @click.option(
     "-r", "--p-r", required=False, default=100, type=int,
@@ -83,9 +83,9 @@ from XDOC import __version__
 
 def standalone_xdoc(
         i_otu,
-        p_filter,
-        m_metadata,
         o_outdir,
+        m_metadata,
+        p_filter,
         p_r,
         p_subr,
         p_pair,
@@ -102,9 +102,9 @@ def standalone_xdoc(
 
     xdoc(
         i_otu,
-        p_filter,
-        m_metadata,
         o_outdir,
+        m_metadata,
+        p_filter,
         p_r,
         p_subr,
         p_pair,

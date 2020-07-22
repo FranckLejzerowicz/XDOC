@@ -233,21 +233,21 @@ def DOC_do(otu: pd.DataFrame, pair: str):
 
 def xdoc(
         i_otu: str,
-        p_filter: str,
-        m_metadata: str,
         o_outdir: str,
-        p_r: int,
-        p_subr: int,
-        p_pair: str,
-        p_mov_avg: int,
-        p_ci: tuple,
-        p_span: float,
-        p_degree: float,
-        p_family: str,
-        p_iterations: int,
-        p_surface: str,
-        p_cores: int,
-        verbose: bool
+        m_metadata: str = None,
+        p_filter: str = None,
+        p_r: int = 100,
+        p_subr: int = 0,
+        p_pair: str = None,
+        p_mov_avg: int = 5,
+        p_ci: tuple = (0.025, 0.5, 0.975,),
+        p_span: float = .2,
+        p_degree: float = 1.,
+        p_family: str = 'symmetric',
+        p_iterations: int = 4,
+        p_surface: str = 'direct',
+        p_cores: int = 1,
+        verbose: bool = True
 ):
     """
     A python wrapper of the R wrapper from https://github.com/Russel88/DOC
