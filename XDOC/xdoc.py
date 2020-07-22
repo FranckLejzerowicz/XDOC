@@ -13,7 +13,7 @@ import numpy as np
 import itertools
 from skmisc.loess import loess
 
-from .bootstrap_mp import get_boot
+from XDOC.bootstrap_mp import get_boot
 import altair as alt
 
 
