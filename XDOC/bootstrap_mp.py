@@ -123,10 +123,14 @@ def get_boot(
     m = mp.Manager()
     llboot = m.list()
     p_rs = range(p_r)
+    cpus = mp.cpu_count()
     if p_cores:
-        p_rs_chunks = int(p_r / p_cores)
+        p_rs_chunks = int(p_r / cpus)
     else:
-        p_rs_chunks = int(p_r / 4)
+        if cpus >= 4:
+            p_rs_chunks = int(p_r / 4)
+        else:
+            p_rs_chunks = int(p_r / 2)
     # p_rs_chunks = int(p_r / 16)
 
     # use all available CPUs
