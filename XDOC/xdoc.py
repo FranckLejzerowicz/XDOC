@@ -19,8 +19,12 @@ def xdoc(
         i_otu: str,
         o_outdir: str,
         m_metadata: str = None,
+        p_column: str = None,
+        p_column_value: tuple = None,
+        p_column_quant: int = 0,
         p_filter_prevalence: float = 0,
         p_filter_abundance: float = 0,
+        p_filter_order: str = 'meta-filter',
         p_r: int = 100,
         p_subr: int = 0,
         p_pair: str = None,
@@ -54,9 +58,19 @@ def xdoc(
     if not isdir(o_outdir):
         os.makedirs(o_outdir)
 
-    if p_filter_prevalence or p_filter_abundance:
+    message = 'input'
+    if m_metadata and p_column and p_column_value or p_filter_prevalence or p_filter_abundance:
         # Filter / Transform OTU-table
-        otu = DOC_filter(otu, p_filter_prevalence, p_filter_abundance)
+        otu = DOC_filter(otu, m_metadata, p_filter_prevalence,
+                         p_filter_abundance, p_filter_order,
+                         p_column, p_column_value, p_column_quant)
+        message = 'filtered'
+
+    if otu.shape[0] < 10:
+        raise IOError('Too few features in the %s table' % message)
+
+    if verbose:
+        print('Table dimension:', otu.shape)
 
     Final = DOC(
         otu,

@@ -23,7 +23,22 @@ from XDOC import __version__
 )
 @click.option(
     "-m", "--m-metadata", required=False, type=str,
-    default="", help="Metadata table."
+    default=None, help="Metadata table."
+)
+@click.option(
+    "-c", "--p-column", required=False, type=str,
+    default=None, help="Column from metadata `-m` to use for "
+                     "filtering based on values of `-v`."
+)
+@click.option(
+    "-v", "--p-column-value", required=False, type=str, multiple=True,
+    default=None, help="Filtering value to select samples based"
+                     " on column passed to `-c`."
+)
+@click.option(
+    "-q", "--p-column-quant", required=False, type=int,
+    default=0, help="Filtering quantile / percentile for samples based on"
+                    " column passed to `-c` (must be between 0 and 100)."
 )
 @click.option(
     "-fp", "--p-filter-prevalence", required=False, type=float,
@@ -34,6 +49,13 @@ from XDOC import __version__
     "-fa", "--p-filter-abundance", required=False, type=float,
     default=0, help="Filter features based on their minimum sample abundance "
                     "(number >1 for abundance counts: <1 for abundance fraction)."
+)
+@click.option(
+    "-f", "--p-filter-order", required=False, default='meta-filter',
+    type=click.Choice(['meta-filter', 'filter-meta']),
+    show_default=True, help="Order to apply the filters: 'filter-meta' first the prevalence/"
+                            "abundance and then based on variable; 'meta-filter' first based "
+                            "on variable and then the prevalence/abundance on the remaining."
 )
 @click.option(
     "-r", "--p-r", required=False, default=100, type=int,
@@ -103,8 +125,12 @@ def standalone_xdoc(
         i_otu,
         o_outdir,
         m_metadata,
+        p_column,
+        p_column_value,
+        p_column_quant,
         p_filter_prevalence,
         p_filter_abundance,
+        p_filter_order,
         p_r,
         p_subr,
         p_pair,
@@ -126,8 +152,12 @@ def standalone_xdoc(
         i_otu,
         o_outdir,
         m_metadata,
+        p_column,
+        p_column_value,
+        p_column_quant,
         p_filter_prevalence,
         p_filter_abundance,
+        p_filter_order,
         p_r,
         p_subr,
         p_pair,
