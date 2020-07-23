@@ -124,7 +124,6 @@ def get_boot(
     llboot = m.list()
     p_rs = range(p_r)
 
-    print('number of items:', p_r)
     if p_cores:
         if p_cores >= p_r:
             nchunks = 1
@@ -143,8 +142,9 @@ def get_boot(
             else:
                 cpus = 4
             nchunks = int(p_r / cpus)
+
+    print('number of items:', p_r)
     print('number of procs: %s' % cpus)
-    # p_rs_chunks = int(p_r / 16)
     print('number of iters:', nchunks)
 
     p = mp.Pool(initializer=init_worker,

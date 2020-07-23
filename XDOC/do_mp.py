@@ -60,7 +60,7 @@ def DOC_do_mp(otu: pd.DataFrame, pair: str, p_cores: int):
     Mat_rJSD_d = m.dict()
 
     iter_items = itertools.combinations(cols, 2)
-    print('number of items:', iter_items)
+    print('number of items:', n_pairs)
     if p_cores:
         if p_cores >= n_pairs:
             nchunks = 1
