@@ -10,11 +10,9 @@ import pandas as pd
 from XDOC.otunull import DOC_otunull
 from XDOC.doc import DOC
 
-def xdoc_null(
-        i_otu: str,
-        o_outdir: str,
-        m_metadata: str = None,
-        p_filter: str = None,
+
+def DOC_null(
+        otu: pd.DataFrame,
         p_r: int = 100,
         p_subr: int = 0,
         p_pair: str = None,
@@ -30,19 +28,12 @@ def xdoc_null(
         non_zero: bool = True,
         verbose: bool = True):
     nulls = {}
-    otu = pd.read_csv(i_otu, header=0, index_col=0, sep='\t')
     for i in range(p_nulls):
         # Make NULL
         otu_null = DOC_otunull(otu, non_zero)
-        i_otu = '%s/random.tmp' % o_outdir
-        otu_null.to_csv(i_otu, index=True, sep='\t')
-
         # Run DOC
         doc_null = DOC(
-            i_otu,
-            o_outdir,
-            m_metadata,
-            p_filter,
+            otu_null,
             p_r,
             p_subr,
             p_pair,

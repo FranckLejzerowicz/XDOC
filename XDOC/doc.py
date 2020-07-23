@@ -6,8 +6,7 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import os, time
-from os.path import isfile, isdir
+import time
 import pandas as pd
 
 from XDOC.do import DOC_do
@@ -17,10 +16,7 @@ from XDOC.ci import DOC_ci
 
 
 def DOC(
-        i_otu: str,
-        o_outdir: str,
-        m_metadata: str = None,
-        p_filter: str = None,
+        otu: pd.DataFrame,
         p_r: int = 100,
         p_subr: int = 0,
         p_pair: str = None,
@@ -40,22 +36,6 @@ def DOC(
     """
 
     start = time.clock()
-
-    if p_pair and len(p_pair) != 2:
-        raise IOError("There should only be two names in pair")
-
-    if not isfile(i_otu):
-        raise IOError("No input table found at %s" % i_otu)
-
-    if verbose:
-        print('read')
-    otu = pd.read_csv(i_otu, header=0, index_col=0, sep='\t')
-    if not isdir(o_outdir):
-        os.makedirs(o_outdir)
-
-    # if p_filter:
-    #     # Filter / Transform OTU-table
-    #     otu = do_filter(otu, p_filter)
 
     # Normalize OTU-table
     otun = otu / otu.sum()

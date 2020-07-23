@@ -26,8 +26,14 @@ from XDOC import __version__
     default="", help="Metadata table."
 )
 @click.option(
-    "-f", "--p-filter", required=False, type=str,
-    default="", help="Filtering config in yaml."
+    "-fp", "--p-filter-prevalence", required=False, type=float,
+    default=0, help="Filter features based on their minimum sample prevalence "
+                    "(number >1 for sample counts: <1 for samples fraction)."
+)
+@click.option(
+    "-fa", "--p-filter-abundance", required=False, type=float,
+    default=0, help="Filter features based on their minimum sample abundance "
+                    "(number >1 for abundance counts: <1 for abundance fraction)."
 )
 @click.option(
     "-r", "--p-r", required=False, default=100, type=int,
@@ -97,7 +103,8 @@ def standalone_xdoc(
         i_otu,
         o_outdir,
         m_metadata,
-        p_filter,
+        p_filter_prevalence,
+        p_filter_abundance,
         p_r,
         p_subr,
         p_pair,
@@ -119,7 +126,8 @@ def standalone_xdoc(
         i_otu,
         o_outdir,
         m_metadata,
-        p_filter,
+        p_filter_prevalence,
+        p_filter_abundance,
         p_r,
         p_subr,
         p_pair,

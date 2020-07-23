@@ -6,17 +6,21 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
+import os
+from os.path import isfile, isdir
+
 import pandas as pd
-from XDOC.null import xdoc_null
 from XDOC.doc import DOC
-# def do_filter(otu: pd.DataFrame, p_filter: str):
+from XDOC.null import DOC_null
+from XDOC.filter import DOC_filter
 
 
 def xdoc(
         i_otu: str,
         o_outdir: str,
         m_metadata: str = None,
-        p_filter: str = None,
+        p_filter_prevalence: float = 0,
+        p_filter_abundance: float = 0,
         p_r: int = 100,
         p_subr: int = 0,
         p_pair: str = None,
@@ -37,11 +41,25 @@ def xdoc(
     from https://github.com/Russel88/DOC
     to run the whole DOC analysis
     """
+
+    if p_pair and len(p_pair) != 2:
+        raise IOError("There should only be two names in pair")
+
+    if not isfile(i_otu):
+        raise IOError("No input table found at %s" % i_otu)
+
+    if verbose:
+        print('read')
+    otu = pd.read_csv(i_otu, header=0, index_col=0, sep='\t')
+    if not isdir(o_outdir):
+        os.makedirs(o_outdir)
+
+    if p_filter_prevalence or p_filter_abundance:
+        # Filter / Transform OTU-table
+        otu = DOC_filter(otu, p_filter_prevalence, p_filter_abundance)
+
     Final = DOC(
-        i_otu,
-        o_outdir,
-        m_metadata,
-        p_filter,
+        otu,
         p_r,
         p_subr,
         p_pair,
@@ -67,11 +85,8 @@ def xdoc(
             table_pd.to_csv(path, index=False, sep='\t')
 
     if null:
-        final_nulls = xdoc_null(
-            i_otu,
-            o_outdir,
-            m_metadata,
-            p_filter,
+        final_nulls = DOC_null(
+            otu,
             p_r,
             p_subr,
             p_pair,
