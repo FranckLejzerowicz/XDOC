@@ -85,7 +85,7 @@ def DOC_do_mp(otu: pd.DataFrame, pair: str, p_cores: int):
         # p = mp.Pool(initializer=init_worker, initargs=(ns, otu))
         p = mp.Pool(initializer=init_worker, initargs=(Mat_Overlap_d, Mat_rJSD_d, otu))
     for idx, _ in enumerate(p.imap_unordered(work, iter_items, chunksize=nchunks)):
-        sys.stderr.write('\rprogress {0:%}'.format(idx/n_pairs))
+        sys.stdout.write('\rprogress {0:%}'.format(idx/n_pairs))
     p.close()
     p.join()
 
