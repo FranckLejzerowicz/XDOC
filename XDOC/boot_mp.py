@@ -65,13 +65,14 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
     # To data frame
     DF_l = pd.DataFrame({'y': DIS_tri, 'x': OL_tri})
     DF_l = DF_l.loc[~DF_l.isna().any(axis=1)]
+
     # Lowess
     LOW = loess(y=DF_l.y, x=DF_l.x, span=p_span, degree=p_degree,
                 family=p_family, iterations=p_iterations, surface=p_surface)
     LOW_pred = LOW.predict(newdata=xs)
     LOW_P = pd.DataFrame({"rJSD Boot%s" % item: LOW_pred.values})
-    #
-    # # Data frame for lme (slope)
+
+    # Data frame for lme (slope)
     tril = np.tril_indices(OL_sub.shape[1], k=-1)
     OL_vals = OL_sub.values[tril]
     DIS_vals = DIS_sub.values[tril]

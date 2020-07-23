@@ -10,6 +10,7 @@ import time
 import pandas as pd
 
 from XDOC.do import DOC_do
+from XDOC.do_mp import DOC_do_mp
 from XDOC.boot import DOC_boot
 from XDOC.loess import DOC_loess
 from XDOC.ci import DOC_ci
@@ -35,15 +36,19 @@ def DOC(
     to run the whole DOC analysis
     """
 
-    start = time.clock()
-
     # Normalize OTU-table
     otun = otu / otu.sum()
 
     if verbose:
         print('Dissimilarity and Overlap')
     # Dissimilarity and Overlap
-    Dis_Over = DOC_do(otun, p_pair)
+    # start = time.clock()
+    # Dis_Over = DOC_do(otun, p_pair)
+    Dis_Over = DOC_do_mp(otun, p_pair, p_cores)
+    # end = time.clock()
+    # print(':' * 30)
+    # print('time:', end - start)
+    # print(':' * 30)
 
     if verbose:
         print('Bootstrap lowess and lme')
@@ -71,9 +76,6 @@ def DOC(
     if verbose:
         print('Lowess no bootsrap')
     LOWESS = DOC_loess(Dis_Over, p_pair, p_span, p_degree, p_family, p_iterations, p_surface)
-
-    end = time.clock()
-    print('time:', end - start)
 
     Final = {
         'DO': Dis_Over[2],

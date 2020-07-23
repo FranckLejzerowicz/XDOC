@@ -8,7 +8,7 @@
 
 import pandas as pd
 import numpy as np
-from XDOC.bootstrap_mp import get_boot
+from XDOC.boot_mp import get_boot
 
 
 def DOC_boot(
@@ -37,12 +37,6 @@ def DOC_boot(
 
     # Overlap values for loess prediction
     xs = np.linspace(start=0, stop=1, num=1001)
-
-    # Start parallel
-    if p_cores == 1:
-        pass
-    else:
-        pass
 
     print("Running bootstraps")
 
