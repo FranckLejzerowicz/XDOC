@@ -6,6 +6,7 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
+import sys
 import random
 import pandas as pd
 import numpy as np
@@ -141,8 +142,8 @@ def get_boot(
         p = mp.Pool(initializer=init_worker,
                     initargs=(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span,
                               p_degree, p_family, p_iterations, p_surface))
-    for _ in p.imap_unordered(work, p_rs, chunksize=p_rs_chunks):
-        pass
+    for idx, _ in enumerate(p.imap_unordered(work, p_rs, chunksize=p_rs_chunks)):
+        sys.stderr.write('\rprogress {0:%}'.format(idx/p_r))
     p.close()
     p.join()
 
