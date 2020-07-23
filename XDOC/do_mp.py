@@ -62,23 +62,23 @@ def DOC_do_mp(otu: pd.DataFrame, pair: str, p_cores: int):
     iter_items = itertools.combinations(cols, 2)
     print('number of items:', iter_items)
     if p_cores:
-        if p_cores >= iter_items:
+        if p_cores >= n_pairs:
             nchunks = 1
             cpus = iter_items
         else:
-            nchunks = int(iter_items / p_cores)
+            nchunks = int(n_pairs / p_cores)
             cpus = p_cores
     else:
         cpus = mp.cpu_count()
-        if cpus >= iter_items:
+        if cpus >= n_pairs:
             nchunks = 1
-            cpus = iter_items
+            cpus = n_pairs
         else:
             if cpus >= 6:
                 cpus = 6
             else:
                 cpus = 4
-            nchunks = int(iter_items / cpus)
+            nchunks = int(n_pairs / cpus)
     print('number of procs: %s' % cpus)
     print('number of iters:', nchunks)
     p = mp.Pool(initializer=init_worker, initargs=(Mat_Overlap_d, Mat_rJSD_d, otu), processes=cpus)

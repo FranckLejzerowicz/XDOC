@@ -39,7 +39,6 @@ def DOC_boot(
     xs = np.linspace(start=0, stop=1, num=1001)
 
     print("Running bootstraps")
-
     llboot = get_boot(OL, DIS, xs, p_r, p_pair, p_mov_avg, p_subr, p_cores,
                       p_span, p_degree, p_family, p_iterations, p_surface)
 
