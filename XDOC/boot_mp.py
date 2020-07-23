@@ -126,29 +126,31 @@ def get_boot(
 
     print('number of items:', p_r)
     if p_cores:
-        print('number of procs:', p_cores)
-        nchunks = int(p_r / p_cores)
+        if p_cores >= p_r:
+            nchunks = 1
+            cpus = p_r
+        else:
+            nchunks = int(p_r / p_cores)
+            cpus = p_cores
     else:
         cpus = mp.cpu_count()
-        print('number of procs:', cpus)
-        if cpus >= 4:
-            nchunks = int(p_r / 4)
+        if cpus >= p_r:
+            nchunks = 1
+            cpus = p_r
         else:
-            nchunks = int(p_r / 2)
+            if cpus >= 6:
+                cpus = 6
+            else:
+                cpus = 4
+            nchunks = int(p_r / cpus)
+    print('number of procs: %s' % cpus)
     # p_rs_chunks = int(p_r / 16)
     print('number of iters:', nchunks)
 
-    # use all available CPUs
-    if p_cores:
-        p = mp.Pool(initializer=init_worker,
-                    initargs=(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span,
-                              p_degree, p_family, p_iterations, p_surface),
-                    processes=p_cores)
-    else:
-        p = mp.Pool(initializer=init_worker,
-                    initargs=(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span,
-                              p_degree, p_family, p_iterations, p_surface),
-                    processes=1)
+    p = mp.Pool(initializer=init_worker,
+                initargs=(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span,
+                          p_degree, p_family, p_iterations, p_surface),
+                processes=cpus)
     # for _ in tqdm.tqdm(p.imap_unordered(work, p_rs, chunksize=nchunks)):
     #     pass
     for idx, _ in enumerate(p.imap_unordered(work, p_rs, chunksize=nchunks)):
