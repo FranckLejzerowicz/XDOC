@@ -7,6 +7,7 @@
 # ----------------------------------------------------------------------------
 
 import sys
+import tqdm
 import random
 import pandas as pd
 import numpy as np
@@ -142,8 +143,10 @@ def get_boot(
         p = mp.Pool(initializer=init_worker,
                     initargs=(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span,
                               p_degree, p_family, p_iterations, p_surface))
-    for idx, _ in enumerate(p.imap_unordered(work, p_rs, chunksize=p_rs_chunks)):
-        sys.stdout.write('\rprogress {0:%}'.format(idx/p_r))
+    for _ in tqdm.tqdm(p.imap_unordered(work, p_rs, chunksize=p_rs_chunks)):
+        pass
+    # for idx, _ in enumerate(p.imap_unordered(work, p_rs, chunksize=p_rs_chunks)):
+        # sys.stdout.write('\rprogress {0:%}'.format(round(idx/p_r, 1)))
     p.close()
     p.join()
 

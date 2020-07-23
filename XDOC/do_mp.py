@@ -7,6 +7,7 @@
 # ----------------------------------------------------------------------------
 
 import sys
+import tqdm
 import pandas as pd
 import numpy as np
 import itertools
@@ -84,8 +85,10 @@ def DOC_do_mp(otu: pd.DataFrame, pair: str, p_cores: int):
     else:
         # p = mp.Pool(initializer=init_worker, initargs=(ns, otu))
         p = mp.Pool(initializer=init_worker, initargs=(Mat_Overlap_d, Mat_rJSD_d, otu))
-    for idx, _ in enumerate(p.imap_unordered(work, iter_items, chunksize=nchunks)):
-        sys.stdout.write('\rprogress {0:%}'.format(idx/n_pairs))
+    # for idx, _ in enumerate(p.imap_unordered(work, iter_items, chunksize=nchunks)):
+        # sys.stdout.write('\rprogress {0:%}'.format(round(idx/n_pairs, 1)))
+    for _ in tqdm.tqdm(p.imap_unordered(work, iter_items, chunksize=nchunks)):
+        pass
     p.close()
     p.join()
 
