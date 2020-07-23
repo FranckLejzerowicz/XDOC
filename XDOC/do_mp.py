@@ -66,32 +66,32 @@ def DOC_do_mp(otu: pd.DataFrame, pair: str, p_cores: int):
     # ns.Mat_rJSD = pd.DataFrame(
     #     [[np.nan] * samples] * samples,
     #     index=cols, columns=cols)
+    print('number of items:', n_pairs)
 
-    cpus = mp.cpu_count()
     if p_cores:
-        nchunks = int(n_pairs / cpus)
+        print('number of procs:', p_cores)
+        nchunks = int(n_pairs / p_cores)
     else:
+        cpus = mp.cpu_count()
+        print('number of procs:', cpus)
         if cpus >= 6:
             nchunks = int(n_pairs / 6)
         else:
             nchunks = int(n_pairs / 2)
-    # p_rs_chunks = int(p_r / 16)
-
+    print('number of iters:', nchunks)
     # use all available CPUs
     iter_items = itertools.combinations(cols, 2)
     if p_cores:
-        # p = mp.Pool(initializer=init_worker, initargs=(ns, otu), processes=p_cores)
         p = mp.Pool(initializer=init_worker, initargs=(Mat_Overlap_d, Mat_rJSD_d, otu), processes=p_cores)
     else:
-        # p = mp.Pool(initializer=init_worker, initargs=(ns, otu))
-        p = mp.Pool(initializer=init_worker, initargs=(Mat_Overlap_d, Mat_rJSD_d, otu))
-    # for idx, _ in enumerate(p.imap_unordered(work, iter_items, chunksize=nchunks)):
-        # sys.stdout.write('\rprogress {0:%}'.format(round(idx/n_pairs, 1)))
-    for _ in tqdm.tqdm(p.imap_unordered(work, iter_items, chunksize=nchunks)):
-        pass
+        p = mp.Pool(initializer=init_worker, initargs=(Mat_Overlap_d, Mat_rJSD_d, otu), processes=1)
+    for idx, _ in enumerate(p.imap_unordered(work, iter_items, chunksize=nchunks)):
+        sys.stdout.write('\rprogress {0:%}'.format(round(idx/n_pairs, 1)))
+    # for _ in tqdm.tqdm(p.imap_unordered(work, iter_items, chunksize=nchunks)):
+    #     pass
     p.close()
     p.join()
-
+    print()
     Mat_Overlap = pd.DataFrame(
         [[np.nan] * samples] * samples,
         index=cols, columns=cols)

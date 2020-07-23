@@ -123,15 +123,20 @@ def get_boot(
     m = mp.Manager()
     llboot = m.list()
     p_rs = range(p_r)
-    cpus = mp.cpu_count()
+
+    print('number of items:', p_r)
     if p_cores:
-        p_rs_chunks = int(p_r / cpus)
+        print('number of procs:', p_cores)
+        nchunks = int(p_r / p_cores)
     else:
+        cpus = mp.cpu_count()
+        print('number of procs:', cpus)
         if cpus >= 4:
-            p_rs_chunks = int(p_r / 4)
+            nchunks = int(p_r / 4)
         else:
-            p_rs_chunks = int(p_r / 2)
+            nchunks = int(p_r / 2)
     # p_rs_chunks = int(p_r / 16)
+    print('number of iters:', nchunks)
 
     # use all available CPUs
     if p_cores:
@@ -142,13 +147,15 @@ def get_boot(
     else:
         p = mp.Pool(initializer=init_worker,
                     initargs=(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span,
-                              p_degree, p_family, p_iterations, p_surface))
-    for _ in tqdm.tqdm(p.imap_unordered(work, p_rs, chunksize=p_rs_chunks)):
-        pass
-    # for idx, _ in enumerate(p.imap_unordered(work, p_rs, chunksize=p_rs_chunks)):
-        # sys.stdout.write('\rprogress {0:%}'.format(round(idx/p_r, 1)))
+                              p_degree, p_family, p_iterations, p_surface),
+                    processes=1)
+    # for _ in tqdm.tqdm(p.imap_unordered(work, p_rs, chunksize=nchunks)):
+    #     pass
+    for idx, _ in enumerate(p.imap_unordered(work, p_rs, chunksize=nchunks)):
+        sys.stdout.write('\rprogress {0:%}'.format(round(idx/p_r, 1)))
     p.close()
     p.join()
+    print()
 
     llboot = [ll[:-1] for ll in sorted(llboot, key=lambda x: x[-1])]
 
