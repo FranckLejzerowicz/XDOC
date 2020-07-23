@@ -74,8 +74,8 @@ from XDOC import __version__
     help="Moving average window to use for estimating where negative slope starts."
 )
 @click.option(
-    "-ci", "--p-ci", required=False, default=(0.025, 0.5, 0.975,), multiple=True,
-    show_default=True, help="Quantiles for confidence intervals."
+    "-ci", "--p-ci", required=False, type=float, default=(0.025, 0.5, 0.975,),
+    multiple=True, show_default=True, help="Quantiles for confidence intervals."
 )
 @click.option(
     "-span", "--p-span", required=False, default=0.2, type=float,
