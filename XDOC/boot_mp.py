@@ -67,9 +67,6 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
     DF_l = pd.DataFrame({'y': DIS_tri, 'x': OL_tri})
     DF_l = DF_l.loc[~DF_l.isna().any(axis=1)]
 
-    for i in DF_l.values:
-        print(i)
-
     # Lowess
     LOW = loess(y=DF_l.y, x=DF_l.x, span=p_span, degree=p_degree,
                 family=p_family, iterations=p_iterations, surface=p_surface)
