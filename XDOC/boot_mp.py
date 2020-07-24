@@ -7,7 +7,6 @@
 # ----------------------------------------------------------------------------
 
 import sys
-import tqdm
 import random
 import pandas as pd
 import numpy as np

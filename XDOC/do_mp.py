@@ -7,7 +7,6 @@
 # ----------------------------------------------------------------------------
 
 import sys
-import tqdm
 import pandas as pd
 import numpy as np
 import itertools
