@@ -66,6 +66,7 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
     # To data frame
     DF_l = pd.DataFrame({'y': DIS_tri, 'x': OL_tri})
     DF_l = DF_l.loc[~DF_l.isna().any(axis=1)]
+
     for i in DF_l.values:
         print(i)
 
@@ -138,7 +139,7 @@ def get_boot(
             nchunks = 1
             cpus = p_r
         else:
-            if cpus >= 6:
+            if cpus <= 6:
                 cpus = 6
             else:
                 cpus = 4
