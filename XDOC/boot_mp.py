@@ -70,8 +70,11 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
     # Lowess
     LOW = loess(y=DF_l.y, x=DF_l.x, span=p_span, degree=p_degree,
                 family=p_family, iterations=p_iterations, surface=p_surface)
-    print(DF_l.y.describe())
-    print(DF_l.x.describe())
+    print(DF_l.x.max()*1000)
+    print(round(DF_l.x.max()*1000)/1000)
+    print(pd.Series(xs).describe())
+    xs = xs[:xs.index(DF_l.x.max()*1000)/1000)]
+    print(pd.Series(xs).describe())
     LOW_pred = LOW.predict(newdata=xs)
     LOW_P = pd.DataFrame({"rJSD Boot%s" % item: LOW_pred.values})
 
