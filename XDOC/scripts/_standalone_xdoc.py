@@ -96,7 +96,7 @@ from XDOC import __version__
 )
 @click.option(
     "-surface", "--p-surface", required=False, show_default=True,
-    default='direct', type=click.Choice(['direct', 'interpolate']),
+    default='interpolate', type=click.Choice(['direct', 'interpolate']),
     help="'direct' estimation (slow exact) or 'interpolate' estimation (fast approximate)."
 )
 @click.option(
