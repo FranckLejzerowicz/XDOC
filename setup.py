@@ -55,8 +55,9 @@ setup(
         'pandas >= 0.19.0',
         'numpy >= 1.12.1',
         'altair >= 4.1.0',
-        'scikit-misc',
-        'statsmodels'
+        'scikit-misc >= 0.1.3',
+        'statsmodels >= 0.11.1',
+        'scipy >= 1.5.0'
     ],
     classifiers=classifiers,
     entry_points={'console_scripts': standalone},

@@ -35,7 +35,7 @@ def xdoc(
         p_family: str = 'symmetric',
         p_iterations: int = 4,
         p_surface: str = 'direct',
-        p_cores: int = 1,
+        p_cpus: int = 1,
         p_nulls: int = 1,
         non_zero: bool = True,
         null: bool = False,
@@ -84,7 +84,7 @@ def xdoc(
         p_family,
         p_iterations,
         p_surface,
-        p_cores,
+        p_cpus,
         verbose
     )
     if verbose:
@@ -111,7 +111,7 @@ def xdoc(
             p_family,
             p_iterations,
             p_surface,
-            p_cores,
+            p_cpus,
             p_nulls,
             non_zero,
             verbose

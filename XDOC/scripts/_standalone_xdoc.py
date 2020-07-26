@@ -74,7 +74,7 @@ from XDOC import __version__
     help="Moving average window to use for estimating where negative slope starts."
 )
 @click.option(
-    "-ci", "--p-ci", required=False, type=float, default=(0.025, 0.5, 0.975,),
+    "-ci", "--p-ci", required=False, type=tuple, default=(0.025, 0.5, 0.975,),
     multiple=True, show_default=True, help="Quantiles for confidence intervals."
 )
 @click.option(
@@ -100,7 +100,7 @@ from XDOC import __version__
     help="'direct' estimation (slow exact) or 'interpolate' estimation (fast approximate)."
 )
 @click.option(
-    "-core", "--p-cores", required=False, default=1, type=int,
+    "-cpus", "--p-cpus", required=False, default=1, type=int,
     show_default=True, help="Number of cores to use."
 )
 @click.option(
@@ -141,7 +141,7 @@ def standalone_xdoc(
         p_family,
         p_iterations,
         p_surface,
-        p_cores,
+        p_cpus,
         p_nulls,
         non_zero,
         null,
@@ -168,7 +168,7 @@ def standalone_xdoc(
         p_family,
         p_iterations,
         p_surface,
-        p_cores,
+        p_cpus,
         p_nulls,
         non_zero,
         null,

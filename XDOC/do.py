@@ -9,7 +9,8 @@
 import pandas as pd
 import numpy as np
 import itertools
-from XDOC.rjds import DOC_rjsd
+
+from scipy.spatial.distance import jensenshannon
 
 
 def DOC_do(otu: pd.DataFrame, pair: str):
@@ -46,7 +47,7 @@ def DOC_do(otu: pd.DataFrame, pair: str):
         renorm_j = y / sum(y)
 
         # rJSD
-        rootJSD = DOC_rjsd(renorm_i, renorm_j)
+        rootJSD = jensenshannon(renorm_i, renorm_j)
 
         # Insert in Matrices
         Mat_Overlap.loc[i, j] = overlap

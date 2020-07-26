@@ -28,7 +28,7 @@ def DOC(
         p_family: str = 'symmetric',
         p_iterations: int = 4,
         p_surface: str = 'direct',
-        p_cores: int = 1,
+        p_cpus: int = 1,
         verbose: bool = True
 ):
     """
@@ -44,7 +44,7 @@ def DOC(
     # Dissimilarity and Overlap
     # start = time.clock()
     # Dis_Over = DOC_do(otun, p_pair)
-    Dis_Over = DOC_do_mp(otun, p_pair, p_cores)
+    Dis_Over = DOC_do_mp(otun, p_pair, p_cpus)
     # end = time.clock()
     # print(':' * 30)
     # print('time:', end - start)
@@ -64,7 +64,7 @@ def DOC(
         p_family,
         p_iterations,
         p_surface,
-        p_cores
+        p_cpus
     )
 
     if verbose:

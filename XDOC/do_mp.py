@@ -12,7 +12,7 @@ import numpy as np
 import itertools
 
 import multiprocessing as mp
-from XDOC.rjds import DOC_rjsd
+from scipy.spatial.distance import jensenshannon
 
 
 def init_worker(Mat_O, Mat_r, ot):
@@ -40,14 +40,14 @@ def mp_do(otu, Mat_Overlap_dict, Mat_rJSD_dict, item):
         renorm_i = x / sum(x)
         renorm_j = y / sum(y)
 
-        rootJSD = DOC_rjsd(renorm_i, renorm_j)
+        rootJSD = jensenshannon(renorm_i, renorm_j)
 
         # Insert in Matrices
         Mat_Overlap_dict[(i, j)] = overlap
         Mat_rJSD_dict[(i, j)] = rootJSD
 
 
-def DOC_do_mp(otu: pd.DataFrame, pair: str, p_cores: int):
+def DOC_do_mp(otu: pd.DataFrame, pair: str, p_cpus: int):
 
     cols = otu.columns.tolist()
     samples = len(cols)
@@ -59,14 +59,13 @@ def DOC_do_mp(otu: pd.DataFrame, pair: str, p_cores: int):
     Mat_rJSD_d = m.dict()
 
     iter_items = itertools.combinations(cols, 2)
-    print('number of items:', n_pairs)
-    if p_cores:
-        if p_cores >= n_pairs:
+    if p_cpus:
+        if p_cpus >= n_pairs:
             nchunks = 1
             cpus = iter_items
         else:
-            nchunks = int(n_pairs / p_cores)
-            cpus = p_cores
+            nchunks = int(n_pairs / p_cpus)
+            cpus = p_cpus
     else:
         cpus = mp.cpu_count()
         if cpus >= n_pairs:
@@ -78,8 +77,11 @@ def DOC_do_mp(otu: pd.DataFrame, pair: str, p_cores: int):
             else:
                 cpus = 4
             nchunks = int(n_pairs / cpus)
+
+    print('number of items:', n_pairs)
     print('number of procs: %s' % cpus)
     print('number of iters:', nchunks)
+
     p = mp.Pool(initializer=init_worker, initargs=(Mat_Overlap_d, Mat_rJSD_d, otu), processes=cpus)
     for idx, _ in enumerate(p.imap_unordered(work, iter_items, chunksize=nchunks)):
         sys.stdout.write('\rprogress {0:%}'.format(round(idx/n_pairs, 1)))
@@ -88,6 +90,8 @@ def DOC_do_mp(otu: pd.DataFrame, pair: str, p_cores: int):
     p.close()
     p.join()
     print()
+
+    # fill the matrices with multiprocessing data
     Mat_Overlap = pd.DataFrame(
         [[np.nan] * samples] * samples,
         index=cols, columns=cols)
