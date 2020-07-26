@@ -28,12 +28,12 @@ from XDOC import __version__
 @click.option(
     "-c", "--p-column", required=False, type=str,
     default=None, help="Column from metadata `-m` to use for "
-                     "filtering based on values of `-v`."
+                       "filtering based on values of `-v`."
 )
 @click.option(
     "-v", "--p-column-value", required=False, type=str, multiple=True,
     default=None, help="Filtering value to select samples based"
-                     " on column passed to `-c`."
+                       " on column passed to `-c`."
 )
 @click.option(
     "-q", "--p-column-quant", required=False, type=int,
@@ -119,8 +119,6 @@ from XDOC import __version__
     "--verbose/--no-verbose", default=False
 )
 @click.version_option(__version__, prog_name="XDOC")
-
-
 def standalone_xdoc(
         i_otu,
         o_outdir,
@@ -173,7 +171,7 @@ def standalone_xdoc(
         non_zero,
         null,
         verbose
-)
+    )
 
 
 if __name__ == "__main__":
