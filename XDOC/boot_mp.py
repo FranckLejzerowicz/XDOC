@@ -73,7 +73,7 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
     print(DF_l.x.max()*1000)
     print(round(DF_l.x.max()*1000)/1000)
     print(pd.Series(xs).describe())
-    xs = xs[:xs.index(round(DF_l.x.max()*1000)/1000)]
+    xs = xs[:round(DF_l.x.max()*1000)]
     print(pd.Series(xs).describe())
     LOW_pred = LOW.predict(newdata=xs)
     LOW_P = pd.DataFrame({"rJSD Boot%s" % item: LOW_pred.values})
