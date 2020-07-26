@@ -37,8 +37,6 @@ def DOC_boot(
 
     # Overlap values for loess prediction
     xs = np.linspace(start=0, stop=1, num=1001)
-    print(xs[:30])
-    print(xs[-30:])
 
     print("Running bootstraps")
     llboot = get_boot(OL, DIS, xs, p_r, p_pair, p_mov_avg, p_subr, p_cpus,
