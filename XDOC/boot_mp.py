@@ -70,10 +70,9 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
     # Lowess
     LOW = loess(y=DF_l.y, x=DF_l.x, span=p_span, degree=p_degree,
                 family=p_family, iterations=p_iterations, surface=p_surface)
-    max = int(round(DF_l.x.max()*1000))
-    xs = np.linspace(start=0, stop=max, num=(max+1))
+    xs = [x for x in xs if DF_l.x.min() < x < DF_l.x.max()]
     print(DF_l.x.describe())
-    print(max)
+    print(xs[:10])
     print(xs[-10:])
     print(pd.Series(xs).describe())
 
