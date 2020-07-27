@@ -69,9 +69,10 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
 
     # Lowess
     LOW = loess(y=DF_l.y, x=DF_l.x, span=p_span, degree=p_degree,
-                family=p_family, iterations=p_iterations, surface='direct')
+                family=p_family, iterations=p_iterations, surface=p_surface)
     # xs = [x for x in xs if DF_l.x.min() < x < DF_l.x.max()]
     LOW_pred = LOW.predict(newdata=xs)
+    print(item, "LOW_pred", LOW_pred)
     LOW_P = pd.DataFrame({"rJSD Boot%s" % item: LOW_pred.values})
 
     # Data frame for lme (slope)
@@ -90,33 +91,18 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
     # LME
     md = smf.mixedlm("DIS ~ OL", Tris_sub, groups=Tris_sub["Row"])
     fit = md.fit()
+    print(item, "fit", fit)
     Est = fit.params['OL']
+    print(item, "Est", Est)
 
     ## Detect negative slope
     # Smooth prediction
     low_ma = ma(LOW_pred.values, p_mov_avg)
+    print(item, "low_ma", low_ma)
     slope = pd.Series(low_ma).diff() / pd.Series(xs).diff()
-    print()
-    print()
-    print("LOW_pred.values")
-    print(pd.Series(LOW_pred.values).describe())
-    print(LOW_pred.values)
-    print()
-    print()
-    print("low_ma")
-    print(pd.Series(low_ma).describe())
-    print(low_ma)
-    print()
-    print()
-    print("slope")
-    print(slope.describe())
-    print(slope)
-    print()
-    print()
-    print("xs")
-    print(pd.Series(xs).describe())
-    print(xs)
+    print(item, "slope", slope)
     point = slope[slope > 0].index[-1]
+    print(item, "point", point)
     neg_slope = xs[point - 1]
 
     # Fns
