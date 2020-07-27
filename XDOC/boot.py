@@ -30,10 +30,10 @@ def DOC_boot(
     OL = do[0]
     DIS = do[1]
 
-    OL.index = range(1, (OL.shape[0 ] +1))
-    DIS.index = range(1, (DIS.shape[0 ] +1))
-    OL.columns = range(1, (OL.shape[1 ] +1))
-    DIS.columns = range(1, (DIS.shape[1 ] +1))
+    OL.index = range(1, (OL.shape[0] + 1))
+    DIS.index = range(1, (DIS.shape[0] + 1))
+    OL.columns = range(1, (OL.shape[1] + 1))
+    DIS.columns = range(1, (DIS.shape[1] + 1))
 
     # Overlap values for loess prediction
     xs = np.linspace(start=0, stop=1, num=1001)

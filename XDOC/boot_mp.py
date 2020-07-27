@@ -71,11 +71,6 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
     LOW = loess(y=DF_l.y, x=DF_l.x, span=p_span, degree=p_degree,
                 family=p_family, iterations=p_iterations, surface=p_surface)
     xs = [x for x in xs if DF_l.x.min() < x < DF_l.x.max()]
-    print(DF_l.x.describe())
-    print(xs[:10])
-    print(xs[-10:])
-    print(pd.Series(xs).describe())
-
     LOW_pred = LOW.predict(newdata=xs)
     LOW_P = pd.DataFrame({"rJSD Boot%s" % item: LOW_pred.values})
 
@@ -101,6 +96,15 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
     # Smooth prediction
     low_ma = ma(LOW_pred.values, p_mov_avg)
     slope = pd.Series(low_ma).diff() / pd.Series(xs).diff()
+    print("low_ma")
+    print(pd.Series(low_ma).describe())
+    print(low_ma)
+    print("slope")
+    print(slope.describe())
+    print(slope)
+    print("xs")
+    print(pd.Series(xs).describe())
+    print(xs)
     point = slope[slope > 0].index[-1]
     neg_slope = xs[point - 1]
 
