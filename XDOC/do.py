@@ -40,7 +40,7 @@ def DOC_do(otu: pd.DataFrame, pair: str):
         x = A.loc[shared, i]
         y = A.loc[shared, j]
 
-        overlap = sum(0.5 * (x + y))
+        overlap = round(sum(0.5 * (x + y)), 5)
 
         # Renormalize
         renorm_i = x / sum(x)
