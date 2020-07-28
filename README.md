@@ -6,7 +6,7 @@ the R code from [Jakob Russel](https://github.com/Russel88/DOC).
 ## Installation
 
 ```
-pip install -U git+https://github.com/FranckLejzerowicz/XDOC.git
+    pip install -U git+https://github.com/FranckLejzerowicz/XDOC.git
 ```
 
 ## Input

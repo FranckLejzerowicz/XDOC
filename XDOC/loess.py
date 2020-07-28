@@ -43,8 +43,9 @@ def DOC_loess(
     # Lowess
     LOW = loess(y=DF_l.y, x=DF_l.x, span=p_span, degree=p_degree,
                 family=p_family, iterations=p_iterations, surface=p_surface)
+    xs = [x for x in xs if DF_l.x.min() < x < DF_l.x.max()]
     LOW_pred = LOW.predict(newdata=xs)
-    LOW_P = pd.DataFrame({"Overlap": [round(float(x), 4) for x in xs], "LOWESS": LOW_pred.values})
+    LOW_P = pd.DataFrame({"Overlap": xs, "LOWESS": LOW_pred.values})
     LOW_P = LOW_P.loc[~LOW_P.isna().any(axis=1)]
     return LOW_P
 

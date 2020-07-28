@@ -74,8 +74,6 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
     xs = [x for x in xs if DF_l.x.min() < x < DF_l.x.max()]
     print("DF_l.x.describe()")
     print(DF_l.x.describe())
-    print("xs[-5:]")
-    print(xs[-5:])
     print("xs[:5]")
     print(xs[:5])
     print("xs[-5:]")
