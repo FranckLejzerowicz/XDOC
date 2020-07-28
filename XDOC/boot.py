@@ -46,6 +46,6 @@ def DOC_boot(
     LOWES = pd.concat([x[0] for x in llboot], axis=1, sort=False)
     LOWES = pd.concat([pd.DataFrame({'Overlap': [round(float(x), 4) for x in xs]}), LOWES], axis=1, sort=False)
     LME = pd.DataFrame({'Slope': [x[1] for x in llboot]})
-    NEG = pd.DataFrame({'Neg_Slope': [x[2] for x in llboot]})
+    NEG = pd.DataFrame({'Neg_Slope': [x[2] for x in llboot if str(x[2])!='nan']})
     FNS = pd.DataFrame({'Fns': [x[3] for x in llboot]})
     return [LOWES, LME, NEG, FNS]
