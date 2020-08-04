@@ -57,7 +57,7 @@ setup(
         'altair >= 4.0.1',
         'scikit-misc >= 0.1.3',
         'statsmodels >= 0.11.1',
-        'scipy >= 1.5.0'
+        'scipy >= 1.1.0'
     ],
     classifiers=classifiers,
     entry_points={'console_scripts': standalone},
