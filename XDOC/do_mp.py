@@ -148,3 +148,85 @@ def DOC_do_mp(otu: pd.DataFrame, pair: str, p_cpus: int):
         List = [Mat_Overlap_new, Mat_rJSD_new, DF]
 
     return List
+
+
+def DOC_do(otu: pd.DataFrame, pair: str, p_cpus: int):
+
+    cols = otu.columns.tolist()
+    samples = len(cols)
+
+    # fill the matrices with multiprocessing data
+    Mat_Overlap = pd.DataFrame(
+        [[np.nan] * samples] * samples,
+        index=cols, columns=cols)
+    Mat_rJSD = pd.DataFrame(
+        [[np.nan] * samples] * samples,
+        index=cols, columns=cols)
+
+    for i, j in itertools.combinations(cols, 2):
+
+        A = otu[[i, j]].copy()
+        # Shared species
+        shared = (A.astype(bool).sum(axis=1) == 2)
+        # Overlap
+        x = A.loc[shared, i]
+        y = A.loc[shared, j]
+
+        overlap = sum(0.5 * (x + y))
+
+        # Renormalize
+        renorm_i = x / sum(x)
+        renorm_j = y / sum(y)
+
+        rootJSD = jensenshannon(renorm_i, renorm_j)
+
+        # Insert in Matrices
+        Mat_Overlap[i, j] = overlap
+        Mat_rJSD[i, j] = rootJSD
+
+    if pair:
+        pairv = [pair[0] if pair[0] in x else x for x in cols]
+        pairv = [pair[1] if pair[1] in x else x for x in pairv]
+        if len(set(pairv)) != 2:
+            raise IOError("Names of pairs do not match column names")
+        Mat_Overlap.index = pairv
+        Mat_Overlap.columns = pairv
+        Mat_Overlap = Mat_Overlap.loc[pair[0], pair[1]]
+
+        Mat_rJSD.index = pairv
+        Mat_rJSD.columns = pairv
+        Mat_rJSD = Mat_rJSD.loc[pair[0], pair[1]]
+
+        DF = pd.concat(
+            {'Overlap': Mat_Overlap.T.stack(dropna=False),
+             'rJSD': Mat_rJSD.T.stack(dropna=False)}, axis=1
+        )
+        DF = DF.loc[~DF.Overlap.isna()]
+
+        List = [Mat_Overlap, Mat_rJSD, DF]
+
+    else:
+
+        DF = pd.concat(
+            {'Overlap': Mat_Overlap.T.stack(dropna=False),
+             'rJSD': Mat_rJSD.T.stack(dropna=False)}, axis=1
+        )
+        DF = DF.loc[~DF.Overlap.isna()]
+        Mat_Overlap_t = Mat_Overlap.T
+        Mat_rJSD_t = Mat_rJSD.T
+
+        Mat_Overlap[Mat_Overlap.isna()] = 0
+        Mat_Overlap_t[Mat_Overlap_t.isna()] = 0
+        Mat_rJSD[Mat_rJSD.isna()] = 0
+        Mat_rJSD_t[Mat_rJSD_t.isna()] = 0
+
+        Mat_Overlap_new = Mat_Overlap + Mat_Overlap_t
+        Mat_rJSD_new = Mat_rJSD + Mat_rJSD_t
+
+        for col in cols:
+            Mat_Overlap_new.loc[col, col] = np.nan
+            Mat_rJSD_new.loc[col, col] = np.nan
+
+        List = [Mat_Overlap_new, Mat_rJSD_new, DF]
+
+    return List

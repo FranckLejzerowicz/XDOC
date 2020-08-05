@@ -116,6 +116,10 @@ from XDOC import __version__
     show_default=True, help="Perform DOC on null models."
 )
 @click.option(
+    "--use-mp/--no-use-mp", default=False,
+    show_default=True, help="Use multiprocessing."
+)
+@click.option(
     "--verbose/--no-verbose", default=False
 )
 @click.version_option(__version__, prog_name="XDOC")
@@ -143,6 +147,7 @@ def standalone_xdoc(
         p_nulls,
         non_zero,
         null,
+        use_mp,
         verbose
 ):
 
@@ -170,6 +175,7 @@ def standalone_xdoc(
         p_nulls,
         non_zero,
         null,
+        use_mp,
         verbose
     )
 

@@ -22,7 +22,8 @@ def DOC_boot(
         p_family: str,
         p_iterations: int,
         p_surface: str,
-        p_cpus: int
+        p_cpus: int,
+        use_mp: bool
 ):
     """
     """
@@ -40,7 +41,7 @@ def DOC_boot(
 
     print("Running bootstraps")
     llboot = get_boot(OL, DIS, xs, p_r, p_pair, p_mov_avg, p_subr, p_cpus,
-                      p_span, p_degree, p_family, p_iterations, p_surface)
+                      p_span, p_degree, p_family, p_iterations, p_surface, use_mp)
 
     # Extract and bind lowess, lme, negative slope and Fns separately
     LOWES = pd.concat([x[0] for x in llboot], axis=1, sort=False)

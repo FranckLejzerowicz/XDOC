@@ -39,6 +39,7 @@ def xdoc(
         p_nulls: int = 1,
         non_zero: bool = True,
         null: bool = False,
+        use_mp: bool = False,
         verbose: bool = True):
     """
     A python wrapper of the R wrapper
@@ -85,6 +86,7 @@ def xdoc(
         p_iterations,
         p_surface,
         p_cpus,
+        use_mp,
         verbose
     )
     if verbose:
