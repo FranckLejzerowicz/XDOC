@@ -48,7 +48,7 @@ def DOC(
     if use_mp:
         Dis_Over = DOC_do_mp(otun, p_pair, p_cpus)
     else:
-        Dis_Over = DOC_do_mp(otun, p_pair, p_cpus)
+        Dis_Over = DOC_do(otun, p_pair, p_cpus)
     # end = time.clock()
     # print(':' * 30)
     # print('time:', end - start)
