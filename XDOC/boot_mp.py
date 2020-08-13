@@ -251,24 +251,24 @@ def get_boot(
         llboot = [ll[:-1] for ll in sorted(llboot, key=lambda x: x[-1])]
 
     print()
-    print("llboot[0].iloc[:5, :]")
-    print(llboot[0].iloc[:5, :])
-    print(llboot[0].iloc[-5:, :])
+    print("llboot[0]")
+    print(llboot[0][:5])
+    print(llboot[0][-5:])
 
     print()
-    print("llboot[1].iloc[:5, :]")
-    print(llboot[1].iloc[:5, :])
-    print(llboot[1].iloc[-5:, :])
+    print("llboot[1]")
+    print(llboot[1][:5])
+    print(llboot[1][-5])
 
     print()
-    print("llboot[2].iloc[:5, :]")
-    print(llboot[2].iloc[:5, :])
-    print(llboot[2].iloc[-5:, :])
+    print("llboot[2]")
+    print(llboot[2][:5])
+    print(llboot[2][-5])
 
     print()
-    print("llboot[3].iloc[:5, :]")
-    print(llboot[3].iloc[:5, :])
-    print(llboot[3].iloc[-5:, :])
+    print("llboot[3]")
+    print(llboot[3][:5])
+    print(llboot[3][-5])
 
     return llboot
 
