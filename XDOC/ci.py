@@ -13,11 +13,15 @@ import numpy as np
 def DOC_ci(lowp: pd.DataFrame, p_ci: tuple):
     """
     """
+
+    print("lowp.loc[:5, :]")
+    print(lowp.loc[:5, :])
+    print(lowp.loc[-5:, :])
+
     rjsd = lowp.iloc[:, 1:]
 
     print("rjsd.loc[:5, :]")
     print(rjsd.loc[:5, :])
-    print("rjsd.loc[-5:, :]")
     print(rjsd.loc[-5:, :])
 
     cis = pd.DataFrame(
