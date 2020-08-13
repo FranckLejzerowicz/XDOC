@@ -45,12 +45,6 @@ def DOC_boot(
 
     # Extract and bind lowess, lme, negative slope and Fns separately
     LOWES = pd.concat([x[0] for x in llboot], axis=1, sort=False).reset_index().rename(columns={'index': 'Overlap'})
-    print()
-    print("LOWES")
-    print(LOWES.iloc[:5, :])
-    print(LOWES.iloc[-5:, :])
-    print(LOWESfds)
-
     LME = pd.DataFrame({'Slope': [x[1] for x in llboot]})
     NEG = pd.DataFrame({'Neg_Slope': [x[2] for x in llboot if str(x[2])!='nan']})
     FNS = pd.DataFrame({'Fns': [x[3] for x in llboot]})
