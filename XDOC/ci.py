@@ -24,6 +24,9 @@ def DOC_ci(lowp: pd.DataFrame, p_ci: tuple):
     print(rjsd.loc[:5, :])
     print(rjsd.loc[-5:, :])
 
+    print("np.percentile(rjsd, axis=1, q=[x*100 for x in p_ci])")
+    print(np.percentile(rjsd, axis=1, q=[x*100 for x in p_ci]))
+
     cis = pd.DataFrame(
         np.percentile(
             rjsd, axis=1, q=[x*100 for x in p_ci]),
