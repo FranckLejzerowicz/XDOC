@@ -37,11 +37,7 @@ def DOC_boot(
     DIS.columns = range(1, (DIS.shape[1] + 1))
 
     # Overlap values for loess prediction
-    xs = np.linspace(start=0, stop=1, num=1001)
-    print("xs")
-    print(xs)
-    print("xs")
-    print([round(x, 4) for x in xs])
+    xs = np.array(round(x, 4) for x in np.linspace(start=0, stop=1, num=1001))
 
     print("Running bootstraps")
     llboot = get_boot(OL, DIS, xs, p_r, p_pair, p_mov_avg, p_subr, p_cpus,
@@ -49,7 +45,6 @@ def DOC_boot(
 
     # Extract and bind lowess, lme, negative slope and Fns separately
     LOWES = pd.concat([x[0] for x in llboot], axis=1, sort=False)
-
     print()
     print("LOWES")
     print(LOWES.iloc[:5, :])
