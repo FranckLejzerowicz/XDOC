@@ -49,7 +49,6 @@ def DOC_boot(
     print("LOWES")
     print(LOWES.iloc[:5, :])
     print(LOWES.iloc[-5:, :])
-    print(LOWESfds)
 
     LOWES = pd.concat([pd.DataFrame({'Overlap': [round(float(x), 4) for x in xs]}), LOWES], axis=1, sort=False)
 
@@ -57,6 +56,7 @@ def DOC_boot(
     print("LOWES")
     print(LOWES.iloc[:5, :])
     print(LOWES.iloc[-5:, :])
+    print(LOWESfds)
 
     LME = pd.DataFrame({'Slope': [x[1] for x in llboot]})
     NEG = pd.DataFrame({'Neg_Slope': [x[2] for x in llboot if str(x[2])!='nan']})
