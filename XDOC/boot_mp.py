@@ -206,6 +206,8 @@ def get_boot(
             # Lowess
             LOW = loess(y=DF_l.y, x=DF_l.x, span=p_span, degree=p_degree,
                         family=p_family, iterations=p_iterations, surface=p_surface)
+            print("1, xs")
+            print(xs)
             xs = [x for x in xs if DF_l.x.min() < x < DF_l.x.max()]
             print("2, xs")
             print(xs)
