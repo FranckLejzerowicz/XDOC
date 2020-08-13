@@ -82,6 +82,10 @@ def DOC(
         print('Lowess no bootsrap')
     LOWESS = DOC_loess(Dis_Over, p_pair, p_span, p_degree, p_family, p_iterations, p_surface)
 
+    print("LOWESS")
+    print(LOWESS.iloc[:5])
+    print(LOWESS.iloc[-5:])
+
     Final = {
         'DO': Dis_Over[2],
         'LME': LME,

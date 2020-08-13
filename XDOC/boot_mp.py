@@ -169,12 +169,6 @@ def get_boot(
     else:
         llboot = []
         p_rs = range(p_r)
-
-        print("p_rs")
-        print(p_rs[:5])
-        print("p_rs")
-        print(p_rs[-5:])
-
         for r in p_rs:
             OL_rows, OL_cols = OL.shape
             if not p_pair:
@@ -215,6 +209,7 @@ def get_boot(
             xs = [x for x in xs if DF_l.x.min() < x < DF_l.x.max()]
             LOW_pred = LOW.predict(newdata=xs)
             LOW_P = pd.DataFrame({"rJSD Boot%s" % r: LOW_pred.values})
+            LOW_P.set_index(xs)
 
             # Data frame for lme (slope)
             tril = np.tril_indices(OL_sub.shape[1], k=-1)
@@ -249,26 +244,6 @@ def get_boot(
             llboot.append([LOW_P, Est, neg_slope, Fns, r])
 
         llboot = [ll[:-1] for ll in sorted(llboot, key=lambda x: x[-1])]
-
-    print()
-    print("llboot[0]")
-    print(llboot[0][:5])
-    print(llboot[0][-5:])
-
-    print()
-    print("llboot[1]")
-    print(llboot[1][:5])
-    print(llboot[1][-5:])
-
-    print()
-    print("llboot[2]")
-    print(llboot[2][:5])
-    print(llboot[2][-5:])
-
-    print()
-    print("llboot[3]")
-    print(llboot[3][:5])
-    print(llboot[3][-5:])
 
     return llboot
 
