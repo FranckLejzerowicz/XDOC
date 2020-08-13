@@ -258,17 +258,17 @@ def get_boot(
     print()
     print("llboot[1]")
     print(llboot[1][:5])
-    print(llboot[1][-5])
+    print(llboot[1][-5:])
 
     print()
     print("llboot[2]")
     print(llboot[2][:5])
-    print(llboot[2][-5])
+    print(llboot[2][-5:])
 
     print()
     print("llboot[3]")
     print(llboot[3][:5])
-    print(llboot[3][-5])
+    print(llboot[3][-5:])
 
     return llboot
 
