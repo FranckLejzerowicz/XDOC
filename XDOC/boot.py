@@ -49,6 +49,7 @@ def DOC_boot(
     print("LOWES")
     print(LOWES.iloc[:5, :])
     print(LOWES.iloc[-5:, :])
+    print(LOWESfds)
 
     LOWES = pd.concat([pd.DataFrame({'Overlap': [round(float(x), 4) for x in xs]}), LOWES], axis=1, sort=False)
 
