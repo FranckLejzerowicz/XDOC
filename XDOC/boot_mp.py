@@ -69,8 +69,9 @@ def mp_bootstrap(llboot, OL, DIS, xs, p_pair, p_subr, p_mov_avg, p_span, p_degre
     DF_l = DF_l.loc[~DF_l.isna().any(axis=1)]
 
     # Lowess
-    LOW = loess(y=DF_l.y, x=DF_l.x, span=p_span, degree=p_degree,
-                family=p_family, iterations=p_iterations, surface=p_surface)
+    LOW = loess(y=DF_l.y, x=DF_l.x,
+                model={'span': p_span, 'degree': p_degree, 'family': p_family},
+                control={'iterations': p_iterations, 'surface': p_surface})
     xs = [x for x in xs if DF_l.x.min() < x < DF_l.x.max()]
     LOW_pred = LOW.predict(newdata=xs)
     LOW_P = pd.DataFrame({"rJSD Boot%s" % item: LOW_pred.values})
