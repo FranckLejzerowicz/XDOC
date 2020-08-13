@@ -98,11 +98,4 @@ def DOC_do(otu: pd.DataFrame, pair: str):
 
         List = [Mat_Overlap_new, Mat_rJSD_new, DF]
 
-    print('Mat_Overlap_new')
-    print(Mat_Overlap_new.iloc[:5, :5])
-    print("Mat_rJSD_new")
-    print(Mat_rJSD_new.iloc[:5, :5])
-    print("DF")
-    print(DF.iloc[:5, :])
-
     return List

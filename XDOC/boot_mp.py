@@ -208,8 +208,8 @@ def get_boot(
                         family=p_family, iterations=p_iterations, surface=p_surface)
             xs = [x for x in xs if DF_l.x.min() < x < DF_l.x.max()]
             LOW_pred = LOW.predict(newdata=xs)
-            LOW_P = pd.DataFrame({"rJSD Boot%s" % r: LOW_pred.values})
-            LOW_P.set_index(xs)
+            LOW_P = pd.DataFrame({"rJSD Boot%s" % r: LOW_pred.values},
+                                 index=[round(x, 4) for x in xs])
 
             # Data frame for lme (slope)
             tril = np.tril_indices(OL_sub.shape[1], k=-1)
