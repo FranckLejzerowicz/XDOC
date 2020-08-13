@@ -49,4 +49,18 @@ def DOC_boot(
     LME = pd.DataFrame({'Slope': [x[1] for x in llboot]})
     NEG = pd.DataFrame({'Neg_Slope': [x[2] for x in llboot if str(x[2])!='nan']})
     FNS = pd.DataFrame({'Fns': [x[3] for x in llboot]})
+
+    print("LOWES")
+    print(LOWES.iloc[:5])
+    print(LOWES.iloc[-5:])
+    print("LME")
+    print(LME.iloc[:5])
+    print(LME.iloc[-5:])
+    print("NEG")
+    print(NEG.iloc[:5])
+    print(NEG.iloc[-5:])
+    print("FNS")
+    print(FNS.iloc[:5])
+    print(FNS.iloc[-5:])
+
     return [LOWES, LME, NEG, FNS]
