@@ -26,6 +26,7 @@ def DOC_null(
         p_cpus: int = 1,
         p_nulls: int = 1,
         non_zero: bool = True,
+        use_mp: bool = False,
         verbose: bool = True):
     nulls = {}
     for i in range(p_nulls):
@@ -45,6 +46,7 @@ def DOC_null(
             p_iterations,
             p_surface,
             p_cpus,
+            use_mp,
             verbose
         )
         nulls['Null.%s' % i] = doc_null

@@ -116,6 +116,7 @@ def xdoc(
             p_cpus,
             p_nulls,
             non_zero,
+            use_mp,
             verbose
         )
         for table, table_pds in final_nulls.items():
