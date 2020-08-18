@@ -57,7 +57,7 @@ def DOC(
     if verbose:
         print('Bootstrap lowess and lme')
     # Bootstrap lowess and lme
-    LOWES, LME, NEG, FNS = DOC_boot(
+    BOOT, LME, NEG, FNS = DOC_boot(
         Dis_Over,
         p_r,
         p_subr,
@@ -75,7 +75,7 @@ def DOC(
     if verbose:
         print('Lowess confidence intervals')
     # LOWESS CI
-    LCIS = DOC_ci(LOWES, p_ci)
+    LCIS = DOC_ci(BOOT, p_ci)
 
     # LOWESS no bootstrap
     if verbose:
@@ -88,7 +88,7 @@ def DOC(
         'LOWESS': LOWESS,
         'NEG': NEG,
         'FNS': FNS,
-        'BOOT': LOWES,
+        'BOOT': BOOT,
         'CI': LCIS
     }
     return Final
