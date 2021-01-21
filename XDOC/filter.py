@@ -106,12 +106,8 @@ def get_col_bool_sign(meta_col: pd.Series, signs_vals: list) -> pd.Series:
 
 
 def cat_filter(otu: pd.DataFrame, m_metadata: str,
-               p_column: str, p_column_value: tuple,
-               p_column_quant: int) -> pd.DataFrame:
-
-    if not isfile(m_metadata):
-        raise IOError('No metadata file named', m_metadata)
-    meta = get_metadata(m_metadata)
+               meta: pd.DataFrame, p_column: str,
+               p_column_value: tuple, p_column_quant: int) -> pd.DataFrame:
 
     if p_column not in meta.columns.tolist()[1:]:
         raise IOError('Variable "%s" not in metadata "%s"' % (p_column, m_metadata))
@@ -147,12 +143,18 @@ def DOC_filter(otu: pd.DataFrame,
                p_filter_order: str,
                p_column: str,
                p_column_value: tuple,
-               p_column_quant: int) -> pd.DataFrame:
+               p_column_quant: int,
+               p_one_per_group: str) -> pd.DataFrame:
+
+    if not isfile(m_metadata):
+        raise IOError('No metadata file named', m_metadata)
+    meta = get_metadata(m_metadata)
 
     if p_filter_order == 'meta-filter':
         if m_metadata and p_column:
             if p_column_value or p_column_quant:
-                otu = cat_filter(otu, m_metadata, p_column, p_column_value, p_column_quant)
+                otu = cat_filter(otu, m_metadata, meta,
+                                 p_column, p_column_value, p_column_quant)
         if p_filter_prevalence or p_filter_abundance:
             otu = num_filter(otu, p_filter_prevalence, p_filter_abundance)
     else:
@@ -160,6 +162,13 @@ def DOC_filter(otu: pd.DataFrame,
             otu = num_filter(otu, p_filter_prevalence, p_filter_abundance)
         if m_metadata and p_column:
             if p_column_value or p_column_quant:
-                otu = cat_filter(otu, m_metadata, p_column, p_column_value, p_column_quant)
+                otu = cat_filter(otu, m_metadata, meta,
+                                 p_column, p_column_value, p_column_quant)
+    if p_one_per_group:
+        otu_sum = otu.sum().sort_values(ascending=False)
+        meta = meta.set_index('sample_name').loc[otu_sum.index, [p_one_per_group]].drop_duplicates()
+        otu = otu.loc[:, meta.index.tolist()]
+
+    otu = otu.loc[otu.sum(1) > 0, otu.sum() > 0]
     return otu
 

@@ -58,6 +58,11 @@ from XDOC import __version__
                             "on variable and then the prevalence/abundance on the remaining."
 )
 @click.option(
+    "-k", "--p-one-per-group", required=False, default=None,
+    help="Select for the analysis only one sample from each value of the passed metadata"
+         "(can be useful to avoid the replication for some group make higher Overlap)"
+)
+@click.option(
     "-r", "--p-r", required=False, default=100, type=int,
     show_default=True, help="Number of bootstraps."
 )
@@ -133,6 +138,7 @@ def standalone_xdoc(
         p_filter_prevalence,
         p_filter_abundance,
         p_filter_order,
+        p_one_per_group,
         p_r,
         p_subr,
         p_pair,
@@ -161,6 +167,7 @@ def standalone_xdoc(
         p_filter_prevalence,
         p_filter_abundance,
         p_filter_order,
+        p_one_per_group,
         p_r,
         p_subr,
         p_pair,

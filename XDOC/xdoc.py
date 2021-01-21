@@ -25,6 +25,7 @@ def xdoc(
         p_filter_prevalence: float = 0,
         p_filter_abundance: float = 0,
         p_filter_order: str = 'meta-filter',
+        p_one_per_group: str = None,
         p_r: int = 100,
         p_subr: int = 0,
         p_pair: str = None,
@@ -55,16 +56,18 @@ def xdoc(
 
     if verbose:
         print('read')
+
     otu = pd.read_csv(i_otu, header=0, index_col=0, sep='\t')
     if not isdir(o_outdir):
         os.makedirs(o_outdir)
 
     message = 'input'
-    if m_metadata and p_column and p_column_value or p_filter_prevalence or p_filter_abundance:
+    if m_metadata and p_column and p_column_value or p_filter_prevalence or p_filter_abundance or m_metadata and p_one_per_group:
         # Filter / Transform OTU-table
         otu = DOC_filter(otu, m_metadata, p_filter_prevalence,
                          p_filter_abundance, p_filter_order,
-                         p_column, p_column_value, p_column_quant)
+                         p_column, p_column_value, p_column_quant,
+                         p_one_per_group)
         message = 'filtered'
 
     if otu.shape[0] < 10:
