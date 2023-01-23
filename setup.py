@@ -54,7 +54,7 @@ setup(
         "click >= 6.7",
         'pandas >= 0.19.0',
         'numpy >= 1.12.1',
-        'altair >= 4.0.1',
+        'altair == 3.1.0',
         'scikit-misc >= 0.1.3',
         'statsmodels >= 0.11.1',
         'scipy >= 1.1.0'
