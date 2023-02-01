@@ -44,11 +44,11 @@ def DOC(
         print('Dissimilarity and Overlap')
     # Dissimilarity and Overlap
     # start = time.clock()
-    # Dis_Over = DOC_do(otun, p_pair)
+    # dis_over = DOC_do(otun, p_pair)
     if use_mp:
-        Dis_Over = DOC_do_mp(otun, p_pair, p_cpus)
+        dis_over = DOC_do_mp(otun, p_pair, p_cpus)
     else:
-        Dis_Over = DOC_do(otun, p_pair)
+        dis_over = DOC_do(otun, p_pair)
     # end = time.clock()
     # print(':' * 30)
     # print('time:', end - start)
@@ -58,7 +58,7 @@ def DOC(
         print('Bootstrap lowess and lme')
     # Bootstrap lowess and lme
     BOOT, LME, NEG, FNS = DOC_boot(
-        Dis_Over,
+        dis_over,
         p_r,
         p_subr,
         p_pair,
@@ -80,10 +80,11 @@ def DOC(
     # LOWESS no bootstrap
     if verbose:
         print('Lowess no bootsrap')
-    LOWESS = DOC_loess(Dis_Over, p_pair, p_span, p_degree, p_family, p_iterations, p_surface)
+    LOWESS = DOC_loess(
+        dis_over, p_pair, p_span, p_degree, p_family, p_iterations, p_surface)
 
-    Final = {
-        'DO': Dis_Over[2],
+    final = {
+        'DO': dis_over[2],
         'LME': LME,
         'LOWESS': LOWESS,
         'NEG': NEG,
@@ -91,4 +92,4 @@ def DOC(
         'BOOT': BOOT,
         'CI': LCIS
     }
-    return Final
+    return final
