@@ -61,6 +61,7 @@ def xdoc(
     if not isdir(o_outdir):
         os.makedirs(o_outdir)
 
+    # print(otu.shape)
     message = 'input'
     if m_metadata and p_column and p_column_value or p_filter_prevalence or p_filter_abundance or m_metadata and p_one_per_group:
         # Filter / Transform OTU-table
@@ -70,13 +71,16 @@ def xdoc(
                          p_one_per_group)
         message = 'filtered'
 
+    # print(otu.shape)
+    # print([x for x in otu.columns if 'V4.DNA.14' in x])
+    # print(otgfd)
     if otu.shape[0] < 10:
         raise IOError('Too few features in the %s table' % message)
 
     if verbose:
         print('Table dimension:', otu.shape)
 
-    Final = DOC(
+    final = DOC(
         otu,
         p_r,
         p_subr,
@@ -94,7 +98,7 @@ def xdoc(
     )
     if verbose:
         print('Writing:')
-    for table, table_pd in Final.items():
+    for table, table_pd in final.items():
         path = '%s/%s.tsv' % (o_outdir, table)
         if verbose:
             print(' -', path)

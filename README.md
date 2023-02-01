@@ -150,4 +150,4 @@ Would return file ``.
 
 ### Bug Reports
 
-contact `flejzerowicz@health.ucsd.edu`
+contact `franck.lejzerowicz@ibv.uio.no`
